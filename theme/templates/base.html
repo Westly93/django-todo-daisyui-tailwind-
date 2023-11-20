@@ -1,0 +1,23 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Todos | {% block title %}{% endblock title %}</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@4.4.2/dist/full.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.8"></script>
+
+    {% tailwind_css %}
+  </head>
+
+  <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    {% block content %} {% endblock content %}
+  </body>
+</html>

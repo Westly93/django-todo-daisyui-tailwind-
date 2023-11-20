@@ -1,0 +1,68 @@
+{% extends 'base.html' %}{% load widget_tweaks %} {% load partials %}{% block content %}
+<div class="max-w-[1024px] mx-auto flex flex-col justify-center mt-5">
+  <h1 class="text-center text-teal-700 font-mono font-semibold text-3xl mb-3">
+    Todos
+  </h1>
+  <div>
+    <form 
+	hx-post="{% url 'core:submit-todo' %}"
+	hx-target="#todos"
+	hx-swap="beforeend"
+	hx-on::after-request="this.reset()"
+	class="flex w-full">
+      <div class="form-control w-3/5">
+        <label>Task </label>
+        {% render_field form.task class+='input input-bordered input-sm input-accent' %}
+      </div>
+      <div class="form-control px-2 py-4 w-1/5">
+        <label class="cursor-pointer label">
+          <span class="label-text">Is Completed</span>
+          {% render_field form.is_completed class+='checkbox checkbox-accent' %}
+        </label>
+      </div>
+      <div class="w-1/5">
+      <button class="btn btn-outline btn-accent btn-sm px-2 mt-4">Submit</button>
+      </div>
+    </form>
+  </div>
+  <div class="overflow-x-auto mt-5">
+    <table class="table table-zebra table-md">
+      <!-- head -->
+      <thead>
+        <tr>
+          
+          <th>Task Description</th>
+          <th>Created at</th>
+          <th>Is Completed</th>
+	  <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="todos">
+        {% for todo in todos %}
+	{% partialdef todo-partial inline=True %}
+        <!-- row 1 -->
+        <tr>
+          <th>{{todo.task}}</th>
+          <td>{{ todo.created_at|date:"F d, Y" }}</td>
+          <td>{{ todo.is_completed }}</td>
+	  <td>
+	     {% if not todo.is_completed %}
+		<button 
+		hx-put="{% url 'core:update-todo' todo.id %}"
+		hx-swap="outerHTML"
+		hx-target="closest tr"
+		class="btn btn-sm btn-outline btn-accent">Mark Completed</button>
+	     {% endif %}
+	     <button 
+		hx-delete="{% url 'core:delete-todo' todo.id %}"
+		hx-on:delete-todo="this.closest('tr').remove()"
+		class="btn btn-sm btn-error">Delete</button>
+	  </td>
+        </tr>
+	{% endpartialdef %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock content %}
